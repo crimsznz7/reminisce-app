@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-size: 16px;
+  }
+  
+  body {
+    @apply bg-white text-black font-sans;
+    font-size: 24px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  * {
+    @apply font-sans;
+  }
+  
+  /* High contrast focus indicators for accessibility */
+  *:focus-visible {
+    outline: 4px solid #3b82f6;
+    outline-offset: 2px;
+  }
+  
+  /* Ensure touch targets are large enough */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@layer components {
+  .btn-large {
+    @apply min-h-[80px] px-8 py-4 text-2xl font-semibold rounded-lg;
+    @apply bg-blue-600 text-white;
+    @apply hover:bg-blue-700 active:bg-blue-800;
+    @apply transition-colors duration-200;
+    @apply focus:outline-none focus:ring-4 focus:ring-blue-300;
+    @apply touch-manipulation; /* Better touch response */
+    @apply select-none; /* Prevent text selection on buttons */
+  }
+  
+  .btn-home {
+    @apply fixed bottom-4 right-4 z-50;
+    @apply min-h-[80px] px-8 py-4 text-2xl font-bold rounded-lg;
+    @apply bg-red-600 text-white;
+    @apply hover:bg-red-700 active:bg-red-800;
+    @apply transition-colors duration-200;
+    @apply focus:outline-none focus:ring-4 focus:ring-red-300;
+    @apply shadow-lg;
+    @apply touch-manipulation;
+    @apply select-none;
+  }
+  
+  /* Tablet-first responsive adjustments */
+  @media (min-width: 768px) {
+    html {
+      font-size: 18px;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    html {
+      font-size: 20px;
+    }
+  }
+  
+  /* Ensure images are accessible */
+  img {
+    @apply max-w-full h-auto;
+  }
+}
