@@ -58,6 +58,13 @@ export default function Home() {
           >
             Game
           </button>
+          <button
+            onClick={() => navigate('/upload')}
+            className="btn-large w-full bg-green-600 hover:bg-green-700 active:bg-green-800 focus:ring-green-300"
+            aria-label="Upload Photos - Add new photos"
+          >
+            Upload Photos
+          </button>
         </nav>
       </div>
     </main>
