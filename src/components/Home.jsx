@@ -65,6 +65,13 @@ export default function Home() {
           >
             Upload Photos
           </button>
+          <button
+            onClick={() => navigate('/settings')}
+            className="min-h-[60px] px-6 py-3 text-xl font-semibold rounded-lg bg-gray-400 text-white hover:bg-gray-500 active:bg-gray-600 transition-colors duration-200 focus:outline-none focus:ring-4 focus:ring-gray-300 w-full"
+            aria-label="Settings - Caregiver tools"
+          >
+            Settings
+          </button>
         </nav>
       </div>
     </main>

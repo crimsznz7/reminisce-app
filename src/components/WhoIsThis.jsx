@@ -28,10 +28,13 @@ export default function WhoIsThis() {
       const photosRef = collection(db, 'photos');
       const querySnapshot = await getDocs(photosRef);
       
+      // Fetch both family photos (with personName) and animals (with type: 'animal')
       const photosData = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })).filter(photo => photo.personName); // Only photos with person names
+      })).filter(photo => 
+        photo.personName || (photo.type === 'animal' && photo.caption)
+      );
       
       setPhotos(photosData);
       setError(null);
@@ -51,14 +54,27 @@ export default function WhoIsThis() {
     const photo = photos[randomIndex];
     setCurrentPhoto(photo);
 
-    // Create options: correct answer + one random wrong answer
-    const wrongPhotos = photos.filter(p => p.id !== photo.id && p.personName);
-    const wrongOption = wrongPhotos.length > 0
-      ? wrongPhotos[Math.floor(Math.random() * wrongPhotos.length)].personName
-      : 'Someone Special';
+    // Determine correct answer based on type
+    const correctAnswer = photo.type === 'animal' ? photo.caption : photo.personName;
+    const photoType = photo.type === 'animal' ? 'animal' : 'person';
+
+    // Create options: correct answer + one random wrong answer from same type
+    const sameTypePhotos = photos.filter(p => 
+      p.id !== photo.id && 
+      ((photoType === 'animal' && p.type === 'animal' && p.caption) ||
+       (photoType === 'person' && p.personName))
+    );
+
+    let wrongOption;
+    if (sameTypePhotos.length > 0) {
+      const wrongPhoto = sameTypePhotos[Math.floor(Math.random() * sameTypePhotos.length)];
+      wrongOption = photoType === 'animal' ? wrongPhoto.caption : wrongPhoto.personName;
+    } else {
+      wrongOption = photoType === 'animal' ? 'Another Animal' : 'Someone Special';
+    }
 
     // Shuffle options
-    const opts = [photo.personName, wrongOption].sort(() => Math.random() - 0.5);
+    const opts = [correctAnswer, wrongOption].sort(() => Math.random() - 0.5);
     setOptions(opts);
     setSelectedAnswer(null);
     setShowFeedback(false);
@@ -113,14 +129,19 @@ export default function WhoIsThis() {
     );
   }
 
-  const isCorrect = selectedAnswer === currentPhoto.personName;
+  // Determine correct answer and question based on type
+  const isAnimal = currentPhoto.type === 'animal';
+  const correctAnswer = isAnimal ? currentPhoto.caption : currentPhoto.personName;
+  const isCorrect = selectedAnswer === correctAnswer;
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center p-8 bg-white" role="main" aria-label="Who is this memory game">
       <div className="w-full max-w-4xl space-y-12">
         {/* Title */}
         <header className="text-center">
-          <h1 className="text-6xl font-bold text-gray-900">Who is this?</h1>
+          <h1 className="text-6xl font-bold text-gray-900">
+            {isAnimal ? 'What is this?' : 'Who is this?'}
+          </h1>
         </header>
 
         {/* Photo */}
@@ -128,7 +149,7 @@ export default function WhoIsThis() {
           {currentPhoto.imageUrl ? (
             <img
               src={currentPhoto.imageUrl}
-              alt="Who is this person?"
+              alt={isAnimal ? 'What is this animal?' : 'Who is this person?'}
               className="max-w-full max-h-[50vh] object-contain rounded-lg shadow-lg"
             />
           ) : (
@@ -165,7 +186,7 @@ export default function WhoIsThis() {
                   Let's try again
                 </div>
                 <div className="text-5xl font-bold text-green-600">
-                  This is {currentPhoto.personName}
+                  {isAnimal ? `This is a ${correctAnswer}` : `This is ${correctAnswer}`}
                 </div>
               </div>
             )}
