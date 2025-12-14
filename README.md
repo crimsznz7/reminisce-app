@@ -28,5 +28,3 @@ The app includes an AI-powered animal memory generator for caregivers:
 - Uses OpenAI TTS for audio narration
 - Generated animals appear in Memory Lane and the game
 
-**Environment Variable Required:**
-- `OPENAI_API_KEY` - Add this to Vercel environment variables (not as VITE_ prefix since it's server-side)
